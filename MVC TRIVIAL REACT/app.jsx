@@ -1,129 +1,119 @@
-
-class Model {
-constructor() { 
-this.Players =[
-      {
-        name: "Jim Hoskins",
-        score: 31,
-        id: 1,
-      },
-       {
-        name: "Andree Hoskins",
-        score: 35,
-        id: 2,
-      },
-       {
-        name: "Alena Hoskins",
-        score: 42,
-        id: 3,
-      },
-      ];
-      this.callback = null;
-   
-      } 
-      subscribe(render) {
-            this.callback = render;
+class Model{
+      constructor(){
+        this.PLAYERS = [
+          {
+            name: "Jim Hoskins",
+            score: 31,
+            id: 1,
+          },
+           {
+            name: "Andree Hoskins",
+            score: 35,
+            id: 2,
+          },
+           {
+            name: "Alena Hoskins",
+            score: 42,
+            id: 3,
+          }
+        ];
+        this.input=null;
+        this.render=undefined;
       }
-      
-      notify() {
-            this.callback();
-      }  
-
+      subscribe(render){
+        this.render=render;
+      }
+      render(){
+        this.render();
+      }
       score(){
-      let scoreTotal=0;
-       for(let i=0 ;i<Players.length ;i++){
-            return scoreTotal=Players.score;       
-       }
+        let sum=0;
+        for(let i=0 ; i<this.PLAYERS ;i++)
+          sum+=player.score;
+        return sum;
       }
-      More(){
-        this.Players[index].score+1;
-        this.callback=render;
+      decrement(index){
+        if(this.PLAYERS[index].score>0){
+          this.PLAYERS[index].score--;
+          this.render();
+        }
       }
-      Decrement(){
-            if(this.Players[index]>0){
-                  this.Players[index]-1;               
-            }
-            this.callback=render;
-      }  
+      more(index){
+        this.PLAYERS[index].score++;
+        this.render();
+      }
     
-}
+    }
 
-const Header = ({model})=>{
+
+
+    const Header = ({model})=>{
       return (  <div className="header">
                   <div className="stats">
                     <table><tbody>
                       <tr><td>Players:</td><td>{model.PLAYERS.length}</td></tr>
-                      <tr><td>Total ponits:</td><td>{model.addScore()}</td></tr>
+                      <tr><td>Total ponits:</td><td>{model.score()}</td></tr>
                     </tbody></table>
                   </div>
                   <div className="stopwatch">
                     <h2>stopwatch</h2>
                     <h1 className="stopwatch-time">0</h1>
-                    <button>start</button>
-                    <button>reset</button>
+                    <button>start</button><button>reset</button>
                   </div>
                 </div>);
     }
 
-    const PlayerList = ({model}) => {
+
+    const PlayerList = ({model})=>{
       return (
         <div>
-          {
-            model.Players.map((item,index) => {
-              return <div className='player' key={item.name}>
-                <div className='player-name'>{item.name}</div>
-                <div className='player-score counter'>
-                  <button onClick={()=>model.Decrement(index)} className='counter-action decrement'>-</button>
-                  <span className='counter-score'>{item.score}</span>
-                  <button onClick={()=>model.More(index)} className='counter-action increment'>+</button>
-                </div>
-              </div>
+        {
+          model.PLAYERS.map((item,index)=>{
+                return (
+                        <div key={index} className="player">
+                          <div className="player-name">{item.name}</div>
+                          <div className="player-score counter">
+                            <button onClick={()=>model.decrement(index)} className="counter-action decrement">-</button>
+                            <div className="counter-score">{item.score}</div>
+                            <button onClick={()=>model.more(index)} className="counter-action increment">+</button>
+                          </div>
+                        </div>);
             })
-          }
-        </div>
-      );
+        }
+        </div>);
     }
 
 
-    const PlayerForm = () => {
+
+    const PlayerForm = ({model})=>{
+      return (<div className="add-player-form">
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    model.addPlayer();
+                  }}
+                >
+                  <input type="text" onChange={e => (model.input = e.target)} />
+                  <input type="submit" value="add player"/>
+                </form>
+              </div>);
+    }
+    const UserView=({title,model})=>{
       return (
-        <div className='add-player-form'>
-          <form>
-            <input type="text" placeholder='ENTER A NAME' />
-            <input type="submit" value='add player' />
-          </form>
-        </div>
+        <div className="scoreboard">
+         <Header model={model}/>
+         <PlayerList model={model}/>
+         <PlayerForm model={model}/>
+         </div>
       );
     }
-    const Application = ({ title, players }) => {
-      return (
-        <div className='scoreboard'>
-          <Header players={players} />
-          <PlayerList players={players}/>
-          <PlayerForm />    
-        </div>
-      );
-    }
-
-  
     
     let model = new Model();
     let render = () => {
        ReactDOM.render(
-          <View title="View" model={model} />,
+          <UserView title="UserView" model={model} />,
           document.getElementById('container')
        );
     };
     model.subscribe(render);
     render(); 
-
-
-
-
-
-
-
-
-
-
-
