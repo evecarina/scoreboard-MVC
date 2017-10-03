@@ -17,30 +17,30 @@ class Model{
         id: 3,
       }
     ];
-    this.input=null;
-    this.render=undefined;
+    
   }
   subscribe(render){
-    this.render=render;
+    this.callback = render;
   }
-  render(){
-    this.render();
-  }
+  notify() {
+    this.callback();
+ }
   score(){
     let sum=0;
     for(let i=0 ; i<this.PLAYERS ;i++)
       sum+=player.score;
     return sum;
   }
+
   decrement(index){
     if(this.PLAYERS[index].score>0){
       this.PLAYERS[index].score--;
-      this.render();
+      this.callback();
     }
   }
   more(index){
     this.PLAYERS[index].score++;
-    this.render();
+    this.callback();
   }
   addPlayer(){
     if(this.input!= null && this.input.value !=''){
@@ -52,14 +52,13 @@ class Model{
         }
       );
       this.input.value='';
-      this.render();
+      this.callback();
     }
   }
+  reset(){
 
+  }
 }
-
-
-
 const Header = ({model})=>{
   return (  <div className="header">
               <div className="stats">
